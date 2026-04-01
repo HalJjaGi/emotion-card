@@ -1,11 +1,19 @@
 import { createApp, createDb } from './db';
 import emotionsRoute from './routes/emotions';
+import type { Env } from './db';
 
 const app = createApp();
 
 // Health check
 app.get('/', (c) => {
   return c.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Middleware to inject db
+app.use('*', async (c, next) => {
+  const db = createDb(c.env.DB);
+  c.set('db', db);
+  await next();
 });
 
 // Routes
@@ -20,7 +28,6 @@ app.onError((err, c) => {
 // Export for Cloudflare Workers
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
-    const db = createDb(env.DB);
-    return app.fetch(request, { ...env, db }, ctx);
+    return app.fetch(request, env, ctx);
   },
 };

@@ -1,10 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  images: {
-    unoptimized: true,
-  },
+  // Vercel SSR 모드 (기본 설정)
+  reactStrictMode: true,
 };
 
 export default nextConfig;

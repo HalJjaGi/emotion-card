@@ -7,6 +7,9 @@ export type Env = {
   DB: D1Database;
   FRONTEND_URL: string;
   NODE_ENV: string;
+  Variables: {
+    db: ReturnType<typeof drizzle<typeof schema>>;
+  };
 };
 
 export type AppContext = {
@@ -14,14 +17,18 @@ export type AppContext = {
 };
 
 export const createApp = () => {
-  const app = new Hono<AppContext>();
+  const app = new Hono<Env>();
 
-  // CORS
-  app.use('*', cors({
-    origin: (origin) => origin,
-    allowMethods: ['GET', 'POST', 'OPTIONS'],
-    allowHeaders: ['Content-Type'],
-  }));
+  // Manual CORS headers (more reliable)
+  app.use('*', async (c, next) => {
+    await next();
+    c.header('Access-Control-Allow-Origin', '*');
+    c.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+    c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  });
+
+  // Handle OPTIONS requests
+  app.options('*', (c) => c.text('', 204));
 
   return app;
 };

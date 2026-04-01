@@ -42,17 +42,15 @@ export const emotionsApi = {
 
 // Emotion Log API
 export const emotionLogApi = {
-  create: (data: CreateEmotionLogDto) => api.post<EmotionLog>('/emotion-log', data),
+  create: (data: CreateEmotionLogDto) => api.post<EmotionLog>('/emotions/log', data),
   getTimeline: (userId: string, page = 1, limit = 10) =>
-    api.get<[EmotionLog[], number]>(`/emotion-log/timeline`, {
-      params: { userId, page, limit },
-    }),
-  getOne: (id: string) => api.get<EmotionLog>(`/emotion-log/${id}`),
-  delete: (id: string) => api.delete(`/emotion-log/${id}`),
+    api.get<EmotionLog[]>(`/emotions/timeline`),
+  getOne: (id: string) => api.get<EmotionLog>(`/emotions/log/${id}`),
+  delete: (id: string) => api.delete(`/emotions/log/${id}`),
 };
 
-// Dot API
+// Dot API (클라이언트에서 생성)
 export const dotApi = {
   generate: (pattern: number[][], variationAmount = 0.3) =>
-    api.post<{ dotArt: string }>('/dot/generate', { pattern, variationAmount }),
+    Promise.resolve({ data: { dotArt: '' } }), // 클라이언트에서 생성하므로 더미
 };

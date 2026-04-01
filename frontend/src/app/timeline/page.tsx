@@ -41,9 +41,9 @@ export default function TimelinePage() {
     );
   }
 
-  const logs = data?.logs || [];
-  const total = data?.total || 0;
-  const hasMore = logs.length < total;
+  const logs = Array.isArray(data) ? data : [];
+  const total = logs.length;
+  const hasMore = false; // TODO: Implement pagination in backend
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">

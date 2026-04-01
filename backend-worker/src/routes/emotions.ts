@@ -2,9 +2,9 @@ import { Hono } from 'hono';
 import { eq, desc } from 'drizzle-orm';
 import { emotions, emotionLogs } from '../db/schema';
 import { generateDotArt } from '../services/dotGenerator';
-import type { AppContext } from '../db';
+import type { Env } from '../db';
 
-const app = new Hono<AppContext>();
+const app = new Hono<Env>();
 
 // 감정 목록 조회
 app.get('/', async (c) => {
