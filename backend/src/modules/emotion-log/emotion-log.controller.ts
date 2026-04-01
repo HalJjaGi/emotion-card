@@ -7,6 +7,7 @@ import {
   Param,
   Query,
   ParseUUIDPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { EmotionLogService } from './emotion-log.service';
 import { CreateEmotionLogDto } from './dto/create-emotion-log.dto';
@@ -29,7 +30,7 @@ export class EmotionLogController {
     });
 
     if (!emotion) {
-      throw new Error('Emotion not found');
+      throw new NotFoundException('Emotion not found');
     }
 
     return this.emotionLogService.create(createEmotionLogDto, emotion.dotPattern || []);
