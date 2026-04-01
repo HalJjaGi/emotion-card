@@ -1,0 +1,23 @@
+name = "emotion-card-backend"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# D1 Database
+[[d1_databases]]
+binding = "emotion_card_db"
+database_name = "emotion-card-db"
+database_id = "a2c67533-f389-4c1d-b4e5-86559cfd54ea"
+
+# KV Namespace (for sessions if needed)
+# [[kv_namespaces]]
+# binding = "emotion_card_kv"
+# id = "your-kv-id"
+
+# Environment variables
+[vars]
+FRONTEND_URL = "https://frontend-self-ten-66.vercel.app"
+NODE_ENV = "production"
+
+# CORS
+[env.production]
+name = "emotion-card-backend"

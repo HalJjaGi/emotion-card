@@ -1,0 +1,23 @@
+{
+  "name": "emotion-card-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "wrangler d1 migrations apply emotion-card-db",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "drizzle-orm": "^0.33.0",
+    "@cloudflare/workers-types": "^4.20241127.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.91.0",
+    "drizzle-kit": "^0.28.0",
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.0"
+  }
+}

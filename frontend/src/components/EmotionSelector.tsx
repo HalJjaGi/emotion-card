@@ -39,7 +39,7 @@ export default function EmotionSelector({
                 selectedEmotion?.id === emotion.id
                   ? emotion.color
                   : undefined,
-              ringColor: selectedEmotion?.id === emotion.id
+              ['--tw-ring-color' as string]: selectedEmotion?.id === emotion.id
                 ? emotion.color
                 : undefined,
             }}
