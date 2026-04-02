@@ -185,3 +185,5 @@ MIT
 ---
 
 Made with ❤️ by Emotion Card Team
+
+<!-- rebuild trigger -->
