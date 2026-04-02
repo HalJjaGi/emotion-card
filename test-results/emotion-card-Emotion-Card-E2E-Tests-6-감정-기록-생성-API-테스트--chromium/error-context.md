@@ -6,37 +6,18 @@
 
 # Test info
 
-- Name: emotion-card.spec.ts >> Emotion Card E2E Tests >> 4. 이유 작성 (30자 제한)
-- Location: tests/emotion-card.spec.ts:57:7
+- Name: emotion-card.spec.ts >> Emotion Card E2E Tests >> 6. 감정 기록 생성 (API 테스트)
+- Location: tests/emotion-card.spec.ts:101:7
 
 # Error details
 
 ```
-Test timeout of 30000ms exceeded.
-```
-
-```
-Error: locator.click: Test timeout of 30000ms exceeded.
-Call log:
-  - waiting for locator('button').first()
-
-```
-
-# Page snapshot
-
-```yaml
-- generic [active] [ref=e1]:
-  - generic [ref=e3]: 에러가 발생했습니다.
-  - alert [ref=e4]
+TypeError: Cannot read properties of undefined (reading 'id')
 ```
 
 # Test source
 
 ```ts
-  1   | import { test, expect } from '@playwright/test';
-  2   | 
-  3   | const FRONTEND_URL = 'https://emotion-card-frontend.pages.dev';
-  4   | const BACKEND_URL = 'https://emotion-card-backend.01dlwldnjs.workers.dev';
   5   | 
   6   | test.describe('Emotion Card E2E Tests', () => {
   7   |   
@@ -94,8 +75,7 @@ Call log:
   59  |     
   60  |     // 감정 선택
   61  |     const emotionButton = page.locator('button').first();
-> 62  |     await emotionButton.click();
-      |                         ^ Error: locator.click: Test timeout of 30000ms exceeded.
+  62  |     await emotionButton.click();
   63  |     
   64  |     // 이유 입력 필드 확인
   65  |     const reasonInput = page.locator('textarea');
@@ -138,7 +118,8 @@ Call log:
   102 |     // 감정 ID 조회
   103 |     const emotionsResponse = await request.get(`${BACKEND_URL}/emotions`);
   104 |     const emotions = await emotionsResponse.json();
-  105 |     const emotionId = emotions[0].id;
+> 105 |     const emotionId = emotions[0].id;
+      |                                   ^ TypeError: Cannot read properties of undefined (reading 'id')
   106 |     
   107 |     // 감정 기록 생성
   108 |     const createResponse = await request.post(`${BACKEND_URL}/emotions/log`, {
@@ -196,4 +177,44 @@ Call log:
   160 |     expect(health).toHaveProperty('status', 'ok');
   161 |     expect(health).toHaveProperty('timestamp');
   162 |     
+  163 |     console.log('✅ 백엔드 건강 체크 통과');
+  164 |     console.log('상태:', health.status);
+  165 |     console.log('시간:', health.timestamp);
+  166 |   });
+  167 | 
+  168 |   test('9. 반응형 디자인 (모바일)', async ({ page }) => {
+  169 |     // 모바일 뷰포트로 설정
+  170 |     await page.setViewportSize({ width: 375, height: 667 });
+  171 |     
+  172 |     await page.goto(FRONTEND_URL);
+  173 |     
+  174 |     // 감정 선택 버튼들이 표시되는지 확인
+  175 |     const emotionButtons = page.locator('button').first();
+  176 |     await expect(emotionButtons).toBeVisible();
+  177 |     
+  178 |     // 그리드 레이아웃 확인 (grid-cols-4)
+  179 |     const gridContainer = page.locator('.grid').first();
+  180 |     await expect(gridContainer).toBeVisible();
+  181 |     
+  182 |     console.log('✅ 모바일 반응형 디자인 정상');
+  183 |   });
+  184 | 
+  185 |   test('10. 에러 핸들링 (존재하지 않는 감정)', async ({ request }) => {
+  186 |     const response = await request.post(`${BACKEND_URL}/emotions/log`, {
+  187 |       data: {
+  188 |         emotionId: 9999, // 존재하지 않는 ID
+  189 |         reason: '테스트',
+  190 |       },
+  191 |     });
+  192 |     
+  193 |     // 404 에러 확인
+  194 |     expect(response.status()).toBe(404);
+  195 |     
+  196 |     const error = await response.json();
+  197 |     expect(error).toHaveProperty('error', 'Emotion not found');
+  198 |     
+  199 |     console.log('✅ 에러 핸들링 정상 작동');
+  200 |   });
+  201 | });
+  202 | 
 ```

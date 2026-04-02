@@ -6,28 +6,15 @@
 
 # Test info
 
-- Name: emotion-card.spec.ts >> Emotion Card E2E Tests >> 4. 이유 작성 (30자 제한)
-- Location: tests/emotion-card.spec.ts:57:7
+- Name: emotion-card.spec.ts >> Emotion Card E2E Tests >> 2. 감정 목록 조회 (API 테스트)
+- Location: tests/emotion-card.spec.ts:21:7
 
 # Error details
 
 ```
-Test timeout of 30000ms exceeded.
-```
+Error: expect(received).toBeTruthy()
 
-```
-Error: locator.click: Test timeout of 30000ms exceeded.
-Call log:
-  - waiting for locator('button').first()
-
-```
-
-# Page snapshot
-
-```yaml
-- generic [active] [ref=e1]:
-  - generic [ref=e3]: 에러가 발생했습니다.
-  - alert [ref=e4]
+Received: false
 ```
 
 # Test source
@@ -56,7 +43,8 @@ Call log:
   21  |   test('2. 감정 목록 조회 (API 테스트)', async ({ request }) => {
   22  |     const response = await request.get(`${BACKEND_URL}/emotions`);
   23  |     
-  24  |     expect(response.ok()).toBeTruthy();
+> 24  |     expect(response.ok()).toBeTruthy();
+      |                           ^ Error: expect(received).toBeTruthy()
   25  |     
   26  |     const emotions = await response.json();
   27  |     
@@ -94,8 +82,7 @@ Call log:
   59  |     
   60  |     // 감정 선택
   61  |     const emotionButton = page.locator('button').first();
-> 62  |     await emotionButton.click();
-      |                         ^ Error: locator.click: Test timeout of 30000ms exceeded.
+  62  |     await emotionButton.click();
   63  |     
   64  |     // 이유 입력 필드 확인
   65  |     const reasonInput = page.locator('textarea');
@@ -158,42 +145,4 @@ Call log:
   122 |     expect(log).toHaveProperty('dotArt');
   123 |     expect(log).toHaveProperty('emotion');
   124 |     
-  125 |     console.log('✅ 감정 기록 생성 성공');
-  126 |     console.log('도트 아트:\n', log.dotArt);
-  127 |     
-  128 |     // 정리: 생성된 기록 삭제
-  129 |     const deleteResponse = await request.delete(`${BACKEND_URL}/emotions/log/${log.id}`);
-  130 |     console.log('✅ 테스트 기록 삭제 완료');
-  131 |   });
-  132 | 
-  133 |   test('7. 타임라인 조회 (API 테스트)', async ({ request }) => {
-  134 |     const response = await request.get(`${BACKEND_URL}/emotions/timeline`);
-  135 |     
-  136 |     expect(response.ok()).toBeTruthy();
-  137 |     
-  138 |     const timeline = await response.json();
-  139 |     
-  140 |     // 타임라인이 배열인지 확인
-  141 |     expect(Array.isArray(timeline)).toBeTruthy();
-  142 |     
-  143 |     if (timeline.length > 0) {
-  144 |       // 각 항목에 emotion이 포함되어 있는지 확인
-  145 |       expect(timeline[0]).toHaveProperty('emotion');
-  146 |       expect(timeline[0]).toHaveProperty('reason');
-  147 |       expect(timeline[0]).toHaveProperty('dotArt');
-  148 |     }
-  149 |     
-  150 |     console.log('✅ 타임라인 조회 성공:', timeline.length, '개 기록');
-  151 |   });
-  152 | 
-  153 |   test('8. 건강 체크 (Backend)', async ({ request }) => {
-  154 |     const response = await request.get(`${BACKEND_URL}/`);
-  155 |     
-  156 |     expect(response.ok()).toBeTruthy();
-  157 |     
-  158 |     const health = await response.json();
-  159 |     
-  160 |     expect(health).toHaveProperty('status', 'ok');
-  161 |     expect(health).toHaveProperty('timestamp');
-  162 |     
 ```
