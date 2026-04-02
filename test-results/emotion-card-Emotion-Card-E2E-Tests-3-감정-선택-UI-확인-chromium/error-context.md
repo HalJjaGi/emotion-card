@@ -89,90 +89,90 @@ Received:    0
   57  |   test('4. 이유 작성 (30자 제한)', async ({ page }) => {
   58  |     await page.goto(FRONTEND_URL);
   59  |     
-  60  |     // 감정 선택
-  61  |     const emotionButton = page.locator('button').first();
-  62  |     await emotionButton.click();
-  63  |     
-  64  |     // 이유 입력 필드 확인
-  65  |     const reasonInput = page.locator('textarea');
-  66  |     await expect(reasonInput).toBeVisible();
-  67  |     
-  68  |     // 30자 텍스트 입력
-  69  |     const testReason = '오늘 친구랑 커피 마셨다 너무 좋아';
-  70  |     await reasonInput.fill(testReason);
-  71  |     
-  72  |     // 입력된 텍스트 확인
-  73  |     const value = await reasonInput.inputValue();
-  74  |     expect(value).toBe(testReason);
-  75  |     
-  76  |     // 글자 수 표시 확인 (30/30)
-  77  |     const charCount = page.locator('text=/\\d+\\/30/');
-  78  |     await expect(charCount).toBeVisible();
-  79  |     
-  80  |     console.log('✅ 이유 작성 기능 정상 (30자 제한)');
-  81  |   });
-  82  | 
-  83  |   test('5. 타임라인 페이지 이동', async ({ page }) => {
-  84  |     await page.goto(FRONTEND_URL);
-  85  |     
-  86  |     // 타임라인 링크 확인
-  87  |     const timelineLink = page.locator('a[href="/timeline"], button:has-text("타임라인")');
+  60  |     // 로딩 완료 대기
+  61  |     await expect(page.locator('text=오늘의 감정')).toBeVisible({ timeout: 10000 });
+  62  |     
+  63  |     // 감정 선택
+  64  |     const emotionButton = page.locator('button:has-text("기쁨"), button:has-text("슬픔")').first();
+  65  |     await emotionButton.click();
+  66  |     
+  67  |     // 이유 입력 필드 확인
+  68  |     const reasonInput = page.locator('textarea');
+  69  |     await expect(reasonInput).toBeVisible();
+  70  |     
+  71  |     // 30자 텍스트 입력
+  72  |     const testReason = '오늘 친구랑 커피 마셨다 너무 좋아';
+  73  |     await reasonInput.fill(testReason);
+  74  |     
+  75  |     // 입력된 텍스트 확인
+  76  |     const value = await reasonInput.inputValue();
+  77  |     expect(value).toBe(testReason);
+  78  |     
+  79  |     // 글자 수 표시 확인 (30/30)
+  80  |     const charCount = page.locator('text=/\\d+\\/30/');
+  81  |     await expect(charCount).toBeVisible();
+  82  |     
+  83  |     console.log('✅ 이유 작성 기능 정상 (30자 제한)');
+  84  |   });
+  85  | 
+  86  |   test('5. 타임라인 페이지 이동', async ({ page }) => {
+  87  |     await page.goto(FRONTEND_URL);
   88  |     
-  89  |     if (await timelineLink.count() > 0) {
-  90  |       await timelineLink.click();
-  91  |       
-  92  |       // 타임라인 페이지 로드 확인
-  93  |       await expect(page).toHaveURL(/timeline/);
+  89  |     // 타임라인 링크 확인
+  90  |     const timelineLink = page.locator('a[href="/timeline"], button:has-text("타임라인")');
+  91  |     
+  92  |     if (await timelineLink.count() > 0) {
+  93  |       await timelineLink.click();
   94  |       
-  95  |       console.log('✅ 타임라인 페이지 이동 성공');
-  96  |     } else {
-  97  |       console.log('⚠️ 타임라인 링크를 찾을 수 없음');
-  98  |     }
-  99  |   });
-  100 | 
-  101 |   test('6. 감정 기록 생성 (API 테스트)', async ({ request }) => {
-  102 |     // 감정 ID 조회
-  103 |     const emotionsResponse = await request.get(`${BACKEND_URL}/emotions`);
-  104 |     const emotions = await emotionsResponse.json();
-  105 |     const emotionId = emotions[0].id;
-  106 |     
-  107 |     // 감정 기록 생성
-  108 |     const createResponse = await request.post(`${BACKEND_URL}/emotions/log`, {
-  109 |       data: {
-  110 |         emotionId: emotionId,
-  111 |         reason: 'Playwright 테스트 기록',
-  112 |       },
-  113 |     });
-  114 |     
-  115 |     expect(createResponse.ok()).toBeTruthy();
-  116 |     
-  117 |     const log = await createResponse.json();
-  118 |     
-  119 |     // 생성된 기록 확인
-  120 |     expect(log).toHaveProperty('id');
-  121 |     expect(log).toHaveProperty('reason', 'Playwright 테스트 기록');
-  122 |     expect(log).toHaveProperty('dotArt');
-  123 |     expect(log).toHaveProperty('emotion');
-  124 |     
-  125 |     console.log('✅ 감정 기록 생성 성공');
-  126 |     console.log('도트 아트:\n', log.dotArt);
+  95  |       // 타임라인 페이지 로드 확인
+  96  |       await expect(page).toHaveURL(/timeline/);
+  97  |       
+  98  |       console.log('✅ 타임라인 페이지 이동 성공');
+  99  |     } else {
+  100 |       console.log('⚠️ 타임라인 링크를 찾을 수 없음');
+  101 |     }
+  102 |   });
+  103 | 
+  104 |   test('6. 감정 기록 생성 (API 테스트)', async ({ request }) => {
+  105 |     // 감정 ID 조회
+  106 |     const emotionsResponse = await request.get(`${BACKEND_URL}/emotions`);
+  107 |     const emotions = await emotionsResponse.json();
+  108 |     const emotionId = emotions[0].id;
+  109 |     
+  110 |     // 감정 기록 생성
+  111 |     const createResponse = await request.post(`${BACKEND_URL}/emotions/log`, {
+  112 |       data: {
+  113 |         emotionId: emotionId,
+  114 |         reason: 'Playwright 테스트 기록',
+  115 |       },
+  116 |     });
+  117 |     
+  118 |     expect(createResponse.ok()).toBeTruthy();
+  119 |     
+  120 |     const log = await createResponse.json();
+  121 |     
+  122 |     // 생성된 기록 확인
+  123 |     expect(log).toHaveProperty('id');
+  124 |     expect(log).toHaveProperty('reason', 'Playwright 테스트 기록');
+  125 |     expect(log).toHaveProperty('dotArt');
+  126 |     expect(log).toHaveProperty('emotion');
   127 |     
-  128 |     // 정리: 생성된 기록 삭제
-  129 |     const deleteResponse = await request.delete(`${BACKEND_URL}/emotions/log/${log.id}`);
-  130 |     console.log('✅ 테스트 기록 삭제 완료');
-  131 |   });
-  132 | 
-  133 |   test('7. 타임라인 조회 (API 테스트)', async ({ request }) => {
-  134 |     const response = await request.get(`${BACKEND_URL}/emotions/timeline`);
-  135 |     
-  136 |     expect(response.ok()).toBeTruthy();
-  137 |     
-  138 |     const timeline = await response.json();
-  139 |     
-  140 |     // 타임라인이 배열인지 확인
-  141 |     expect(Array.isArray(timeline)).toBeTruthy();
+  128 |     console.log('✅ 감정 기록 생성 성공');
+  129 |     console.log('도트 아트:\n', log.dotArt);
+  130 |     
+  131 |     // 정리: 생성된 기록 삭제
+  132 |     const deleteResponse = await request.delete(`${BACKEND_URL}/emotions/log/${log.id}`);
+  133 |     console.log('✅ 테스트 기록 삭제 완료');
+  134 |   });
+  135 | 
+  136 |   test('7. 타임라인 조회 (API 테스트)', async ({ request }) => {
+  137 |     const response = await request.get(`${BACKEND_URL}/emotions/timeline`);
+  138 |     
+  139 |     expect(response.ok()).toBeTruthy();
+  140 |     
+  141 |     const timeline = await response.json();
   142 |     
-  143 |     if (timeline.length > 0) {
-  144 |       // 각 항목에 emotion이 포함되어 있는지 확인
-  145 |       expect(timeline[0]).toHaveProperty('emotion');
+  143 |     // 타임라인이 배열인지 확인
+  144 |     expect(Array.isArray(timeline)).toBeTruthy();
+  145 |     
 ```

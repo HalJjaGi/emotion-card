@@ -57,8 +57,11 @@ test.describe('Emotion Card E2E Tests', () => {
   test('4. 이유 작성 (30자 제한)', async ({ page }) => {
     await page.goto(FRONTEND_URL);
     
+    // 로딩 완료 대기
+    await expect(page.locator('text=오늘의 감정')).toBeVisible({ timeout: 10000 });
+    
     // 감정 선택
-    const emotionButton = page.locator('button').first();
+    const emotionButton = page.locator('button:has-text("기쁨"), button:has-text("슬픔")').first();
     await emotionButton.click();
     
     // 이유 입력 필드 확인
