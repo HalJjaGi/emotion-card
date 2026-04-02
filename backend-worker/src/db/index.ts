@@ -26,7 +26,6 @@ export const createApp = () => {
       'https://emotion-card-frontend.pages.dev',
       'http://localhost:3000',
       'http://localhost:3001',
-      'https://emotion-card-frontend.pages.dev',
     ];
     
     if (origin && allowedOrigins.includes(origin)) {
@@ -35,14 +34,7 @@ export const createApp = () => {
     c.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     c.header('Access-Control-Allow-Credentials', 'true');
-  });
-    
-    if (origin && allowedOrigins.includes(origin)) {
-      c.header('Access-Control-Allow-Origin', origin);
-    }
-    c.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-    c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    c.header('Access-Control-Allow-Credentials', 'true');
+    await next();
   });
 
   // Handle OPTIONS requests
