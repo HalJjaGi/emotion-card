@@ -90,7 +90,7 @@ Received:    0
   58  |     await page.goto(FRONTEND_URL);
   59  |     
   60  |     // 로딩 완료 대기
-  61  |     await expect(page.locator('text=오늘의 감정')).toBeVisible({ timeout: 10000 });
+  61  |     await expect(page.locator('h2:has-text("오늘의 감정을 선택하세요")')).toBeVisible({ timeout: 10000 });
   62  |     
   63  |     // 감정 선택
   64  |     const emotionButton = page.locator('button:has-text("기쁨"), button:has-text("슬픔")').first();

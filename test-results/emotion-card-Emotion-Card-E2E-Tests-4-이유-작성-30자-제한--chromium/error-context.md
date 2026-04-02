@@ -14,22 +14,21 @@
 ```
 Error: expect(locator).toBeVisible() failed
 
-Locator: locator('text=오늘의 감정')
+Locator: locator('text=/\\d+\\/30/')
 Expected: visible
-Error: strict mode violation: locator('text=오늘의 감정') resolved to 2 elements:
-    1) <h1 class="text-3xl font-bold text-center mb-8">🎨 오늘의 감정 카드</h1> aka getByRole('heading', { name: '🎨 오늘의 감정 카드' })
-    2) <h2 class="text-lg font-semibold mb-3">오늘의 감정을 선택하세요</h2> aka getByRole('heading', { name: '오늘의 감정을 선택하세요' })
+Timeout: 5000ms
+Error: element(s) not found
 
 Call log:
-  - Expect "toBeVisible" with timeout 10000ms
-  - waiting for locator('text=오늘의 감정')
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for locator('text=/\\d+\\/30/')
 
 ```
 
 # Page snapshot
 
 ```yaml
-- generic [active] [ref=e1]:
+- generic [ref=e1]:
   - main [ref=e3]:
     - heading "🎨 오늘의 감정 카드" [level=1] [ref=e4]
     - generic [ref=e5]:
@@ -62,9 +61,9 @@ Call log:
     - generic [ref=e32]:
       - heading "이유를 작성해주세요" [level=2] [ref=e33]
       - generic [ref=e34]:
-        - textbox "30자 이내로 작성해주세요..." [ref=e35]
-        - generic [ref=e36]: 0 / 30
-    - button "감정 카드 만들기 ✨" [disabled] [ref=e37]
+        - textbox "30자 이내로 작성해주세요..." [active] [ref=e35]: 오늘 친구랑 커피 마셨다 너무 좋아
+        - generic [ref=e36]: 19 / 30
+    - button "감정 카드 만들기 ✨" [ref=e37]
     - link "내 타임라인 보기 →" [ref=e39] [cursor=pointer]:
       - /url: /timeline
   - alert [ref=e40]
@@ -133,8 +132,7 @@ Call log:
   58  |     await page.goto(FRONTEND_URL);
   59  |     
   60  |     // 로딩 완료 대기
-> 61  |     await expect(page.locator('text=오늘의 감정')).toBeVisible({ timeout: 10000 });
-      |                                               ^ Error: expect(locator).toBeVisible() failed
+  61  |     await expect(page.locator('h2:has-text("오늘의 감정을 선택하세요")')).toBeVisible({ timeout: 10000 });
   62  |     
   63  |     // 감정 선택
   64  |     const emotionButton = page.locator('button:has-text("기쁨"), button:has-text("슬픔")').first();
@@ -154,7 +152,8 @@ Call log:
   78  |     
   79  |     // 글자 수 표시 확인 (30/30)
   80  |     const charCount = page.locator('text=/\\d+\\/30/');
-  81  |     await expect(charCount).toBeVisible();
+> 81  |     await expect(charCount).toBeVisible();
+      |                             ^ Error: expect(locator).toBeVisible() failed
   82  |     
   83  |     console.log('✅ 이유 작성 기능 정상 (30자 제한)');
   84  |   });
@@ -235,4 +234,24 @@ Call log:
   159 |     expect(response.ok()).toBeTruthy();
   160 |     
   161 |     const health = await response.json();
+  162 |     
+  163 |     expect(health).toHaveProperty('status', 'ok');
+  164 |     expect(health).toHaveProperty('timestamp');
+  165 |     
+  166 |     console.log('✅ 백엔드 건강 체크 통과');
+  167 |     console.log('상태:', health.status);
+  168 |     console.log('시간:', health.timestamp);
+  169 |   });
+  170 | 
+  171 |   test('9. 반응형 디자인 (모바일)', async ({ page }) => {
+  172 |     // 모바일 뷰포트로 설정
+  173 |     await page.setViewportSize({ width: 375, height: 667 });
+  174 |     
+  175 |     await page.goto(FRONTEND_URL);
+  176 |     
+  177 |     // 감정 선택 버튼들이 표시되는지 확인
+  178 |     const emotionButtons = page.locator('button').first();
+  179 |     await expect(emotionButtons).toBeVisible();
+  180 |     
+  181 |     // 그리드 레이아웃 확인 (grid-cols-4)
 ```

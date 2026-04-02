@@ -58,7 +58,7 @@ test.describe('Emotion Card E2E Tests', () => {
     await page.goto(FRONTEND_URL);
     
     // 로딩 완료 대기
-    await expect(page.locator('text=오늘의 감정')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h2:has-text("오늘의 감정을 선택하세요")')).toBeVisible({ timeout: 10000 });
     
     // 감정 선택
     const emotionButton = page.locator('button:has-text("기쁨"), button:has-text("슬픔")').first();
