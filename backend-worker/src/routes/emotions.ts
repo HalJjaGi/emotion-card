@@ -91,21 +91,12 @@ app.get('/log/:id', async (c) => {
   return c.json(log);
 });
 
-// 기록 삭제
+// 기록 삭제 (일시 중단 - 인증 필요)
 app.delete('/log/:id', async (c) => {
-  const db = c.get('db');
-  const id = parseInt(c.req.param('id'));
-
-  const [deleted] = await db
-    .delete(emotionLogs)
-    .where(eq(emotionLogs.id, id))
-    .returning();
-
-  if (!deleted) {
-    return c.json({ error: 'Log not found' }, 404);
-  }
-
-  return c.json({ success: true });
+  return c.json({ 
+    error: 'This endpoint is temporarily disabled. Authentication required.',
+    code: 'AUTH_REQUIRED'
+  }, 403);
 });
 
 export default app;

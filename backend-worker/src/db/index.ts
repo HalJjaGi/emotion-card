@@ -19,12 +19,21 @@ export type AppContext = {
 export const createApp = () => {
   const app = new Hono<Env>();
 
-  // Manual CORS headers (more reliable)
+  // CORS 설정 - 특정 도메인만 허용
   app.use('*', async (c, next) => {
-    await next();
-    c.header('Access-Control-Allow-Origin', '*');
+    const origin = c.req.header('origin');
+    const allowedOrigins = [
+      'https://frontend-self-ten-66.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ];
+    
+    if (origin && allowedOrigins.includes(origin)) {
+      c.header('Access-Control-Allow-Origin', origin);
+    }
     c.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    c.header('Access-Control-Allow-Credentials', 'true');
   });
 
   // Handle OPTIONS requests
