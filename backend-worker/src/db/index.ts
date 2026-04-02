@@ -23,10 +23,19 @@ export const createApp = () => {
   app.use('*', async (c, next) => {
     const origin = c.req.header('origin');
     const allowedOrigins = [
-      'https://frontend-self-ten-66.vercel.app',
+      'https://emotion-card-frontend.pages.dev',
       'http://localhost:3000',
       'http://localhost:3001',
+      'https://emotion-card-frontend.pages.dev',
     ];
+    
+    if (origin && allowedOrigins.includes(origin)) {
+      c.header('Access-Control-Allow-Origin', origin);
+    }
+    c.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+    c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    c.header('Access-Control-Allow-Credentials', 'true');
+  });
     
     if (origin && allowedOrigins.includes(origin)) {
       c.header('Access-Control-Allow-Origin', origin);
